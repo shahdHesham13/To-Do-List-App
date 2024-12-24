@@ -11,7 +11,7 @@ const session = require("express-session");
 const passport = require("passport");
 const initializePassport = require("./passportConfig");
 const methodOverride = require('method-override');
-
+//method-override Enables HTTP methods like PUT and DELETE.
 
 initializePassport(passport);
 
@@ -36,6 +36,8 @@ app.use(flash());
 app.use("/tasks", tasksRoute);
 
 app.use(methodOverride('_method'));
+app.use(express.static('views'));
+
 
 app.get('/', (req, res) => {
     res.render("index");
@@ -120,6 +122,13 @@ app.post("/users/register", async  (req, res) => {
     
 });
 
+// Redirect to tasks page after login
+/*app.get('/tasks', (req, res) => {
+  //res.redirect('/tasks');
+  res.render("tasks", {user: req.user.username})
+});*/
+
+
 /*app.post("/users/login", passport.authenticate("local", {
     successRedirect: "/users/dashboard",
     failureRedirect: "/users/login",
@@ -155,13 +164,6 @@ function checkNotAuthenticated(req, res, next) {
   }
   res.redirect("/users/login");
 }
-
-
-// Redirect to tasks page after login
-app.get('/tasks', (req, res) => {
-  res.redirect('/tasks');
-});
-
 // Routes
 app.use('/tasks', tasksRoute);
 

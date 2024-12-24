@@ -1,37 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Tasks</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Your Tasks</h1>
-    <form action="/tasks" method="POST">
-        <input type="text" name="title" placeholder="Task Title" required />
-        <input type="text" name="description" placeholder="Task Description" required />
-        <input type="date" name="dueDate" required />
-        <select name="status">
-            <option value="pending">Pending</option>
-            <option value="completed">Completed</option>
-        </select>
-        <button type="submit">Add Task</button>
-    </form>
+    <div class="form-container">
+        
+        <div class="text-center my-4">
+            <h1><%= user.charAt(0).toUpperCase() + user.slice(1) %>’s Tasks</h1>
+        </div>
+        <h2>Add a New Task</h2>
+        <form action="/tasks" method="POST" class="mb-4">
+            <div class="form-group">
+                <input type="text" name="title" class="form-control" placeholder="Task Title" required>
+            </div>
+            <div class="form-group">
+                <input type="text" name="description" class="form-control" placeholder="Task Description" required>
+            </div>
+            <div class="form-group">
+                <input type="date" name="dueDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <select name="status" class="form-control">
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Add Task</button>
+        </form>
+    </div>
 
-    <h2>Task List</h2>
-    <ul>
-        <% tasks.forEach(task => { %>
-            <li>
-                <strong><%= task.title %></strong>: <%= task.description %>
-                <br />Due: <%= task.dueDate %>, Status: <%= task.status %>
-                <form action="/tasks/<%= task.id %>?_method=PUT" method="POST">
-                    <input type="hidden" name="status" value="completed" />
-                    <button type="submit">Mark as Completed</button>
-                </form>
-                <form action="/tasks/<%= task.id %>?_method=DELETE" method="POST">
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
-        <% }) %>
-    </ul>
-    <a href="/users/logout">Logout</a>
+    <div class="tasks-container">
+        <h2>Task List</h2>
+        <ul class="list-group">
+            <% tasks.forEach(task => { %>
+                <li class="list-group-item">
+                    <!-- Display task information -->
+                    <strong class="task-title">✔️<%= task.title %></strong>
+                    <p class="task-description"><%= task.description %></p>
+                    <p class="task-info">
+                        Due: <%= task.due_date.toISOString().slice(0, 10) %> <br> 
+                        Status: <%= task.status %>
+                    </p>
+                    
+                    <!-- Inline form for editing a task -->
+                    <form action="/tasks/<%= task.task_id %>?_method=PUT" method="POST" class="mb-2">
+                        <div class="form-group">
+                            <input type="text" name="title" class="form-control" value="<%= task.title %>" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="description" class="form-control" value="<%= task.description %>" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="date" name="dueDate" class="form-control" value="<%= task.due_date.toISOString().slice(0, 10) %>" required>
+                        </div>
+                        <div class="form-group">
+                            <select name="status" class="form-control">
+                                <option value="pending" <%= task.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                <option value="completed" <%= task.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                    </form>
+
+                    <!-- Buttons for marking as completed or deleting -->
+                    <div class="task-actions">
+                        <form action="/tasks/<%= task.task_id %>?_method=PUT" method="POST" class="d-inline">
+                            <input type="hidden" name="status" value="completed">
+                            <button type="submit" class="btn btn-success btn-sm">Mark as Completed</button>
+                        </form>
+                        <form action="/tasks/<%= task.task_id %>?_method=DELETE" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+        <a href="/users/logout" class="btn btn-link mt-4">Logout</a>
+    </div>
 </body>
 </html>
