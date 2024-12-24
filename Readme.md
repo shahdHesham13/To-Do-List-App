@@ -82,7 +82,7 @@ This document walks you through the structure of the To-Do List web application 
     );
     ```
     
-- **Database Connection**: The `db.js` file sets up the connection to the PostgreSQL database using a connection pool. It uses environment variables to securely store credentials and differentiate between production and development environments.
+- **Database Connection**: The `db.js` file sets up the connection to the PostgreSQL database using a connection pool. It uses environment variables `.env` to securely store credentials and differentiate between production and development environments.
     
  ```javascript
 require("dotenv").config();
